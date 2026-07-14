@@ -4,7 +4,7 @@ requires = ["setuptools", "setuptools.scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "shapeddataclass"
+name = "bufferdataclass"
 
 # the version is automatically determined using setuptools.scm
 dynamic = ["version"]
@@ -56,10 +56,10 @@ python_version = "3.14"
 strict = true
 
 [tool.setuptools]
-packages = ["shapeddataclass"]
+packages = ["bufferdataclass"]
 
 # configurations for setuptools-scm. This section is required for the project to be built correctly
 [tool.setuptools_scm]
 
 [project.scripts]
-app = "shapeddataclass.app:main"
+app = "bufferdataclass.app:main"

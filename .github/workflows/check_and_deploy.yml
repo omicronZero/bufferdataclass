@@ -39,12 +39,12 @@ jobs:
         run: ruff format --diff --target-version=py314
 
       - name: MyPy
-        run: mypy shapeddataclass
+        run: mypy bufferdataclass
 
       - name: Run tests
         run: |
           mkdir summary
-          pytest --cov=shapeddataclass --cov-report=markdown-append:summary/coverage.md --markdown-summary-file=summary/summary.md
+          pytest --cov=bufferdataclass --cov-report=markdown-append:summary/coverage.md --markdown-summary-file=summary/summary.md
           echo -e "# Summary\n" >> $GITHUB_STEP_SUMMARY
           cat summary/summary.md >> $GITHUB_STEP_SUMMARY
           echo -e "\n# Coverage\n" >> $GITHUB_STEP_SUMMARY
@@ -57,7 +57,7 @@ jobs:
 #    name: Build project for TestPyPI
 #    runs-on: ubuntu-latest
 #    env:
-#      SETUPTOOLS_SCM_OVERRIDES_FOR_SHAPEDDATACLASS: '{local_scheme = "no-local-version-strict"}'
+#      SETUPTOOLS_SCM_OVERRIDES_FOR_BUFFERDATACLASS: '{local_scheme = "no-local-version-strict"}'
 #
 #    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
 #
@@ -78,7 +78,7 @@ jobs:
 #    environment:
 #      name: testpypi
 #
-#      url: https://test.pypi.org/p/shapeddataclass
+#      url: https://test.pypi.org/p/bufferdataclass
 #
 #    permissions:
 #      id-token: write
@@ -119,7 +119,7 @@ jobs:
 #    environment:
 #        name: pypi
 #
-#        url: https://pypi.org/p/shapeddataclass
+#        url: https://pypi.org/p/bufferdataclass
 #    permissions:
 #      id-token: write
 #

@@ -1,4 +1,4 @@
-shapeddataclass documentation
+bufferdataclass documentation
 ============================
 
 
