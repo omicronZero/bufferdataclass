@@ -6,7 +6,6 @@ rm -rf docs/build
 rm -rf docs/source/_autogen
 
 # build ReST from source
-# TODO: replace shapeddataclass
 sphinx-apidoc -o docs/source/_autogen shapeddataclass
 
 # build documentation from ReST

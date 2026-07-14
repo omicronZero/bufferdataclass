@@ -38,7 +38,7 @@ def extract_info(*path: str, default: str = '') -> Any:
 
 
 # TODO: adjust copyright and optionally the other fields below. Use '\xa9' for the copyright sign
-copyright = ''
+copyright = '\xa9 Copyright 2026 Josef Mayr'
 
 project = extract_info('project', 'name')
 authors = extract_info('project', 'authors')

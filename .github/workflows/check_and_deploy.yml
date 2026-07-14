@@ -57,7 +57,6 @@ jobs:
 #    name: Build project for TestPyPI
 #    runs-on: ubuntu-latest
 #    env:
-#      # TODO: replace SHAPEDDATACLASS (derived from shapeddataclass) with the escaped project.name from pyproject.toml (upper-case everything, replace '.', '-' with '_', see PEP 503)
 #      SETUPTOOLS_SCM_OVERRIDES_FOR_SHAPEDDATACLASS: '{local_scheme = "no-local-version-strict"}'
 #
 #    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
@@ -79,8 +78,7 @@ jobs:
 #    environment:
 #      name: testpypi
 #
-#      # TODO: change <shapeddataclass> to the package name you assigned for your PyPI project
-#      url: https://test.pypi.org/p/<shapeddataclass>
+#      url: https://test.pypi.org/p/shapeddataclass
 #
 #    permissions:
 #      id-token: write
@@ -121,8 +119,7 @@ jobs:
 #    environment:
 #        name: pypi
 #
-#        # TODO: change <shapeddataclass> to the package name you assigned for your PyPI project
-#        url: https://pypi.org/p/<shapeddataclass>
+#        url: https://pypi.org/p/shapeddataclass
 #    permissions:
 #      id-token: write
 #
