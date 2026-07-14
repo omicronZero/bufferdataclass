@@ -1,0 +1,66 @@
+# based on https://github.com/pypa/sampleproject/blob/main/pyproject.toml
+[build-system]
+requires = ["setuptools", "setuptools.scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# TODO: adjust python_ci_base. This name *must* match your package's name on PyPI and TestPyPI if you're deploying to them
+name = "python_ci_base"
+
+# the version is automatically determined using setuptools.scm
+dynamic = ["version"]
+
+# TODO: adjust description
+description = ""
+readme = "README.md"
+requires-python = ">=3.14"
+license-files = ["LICEN[CS]E"]
+# TODO: adjust keywords
+keywords = []
+
+# TODO: adjust dependencies
+dependencies = [
+]
+
+# see https://pypi.org/classifiers/
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3 :: Only",
+]
+
+[project.optional-dependencies]
+docs = ['pydata_sphinx_theme', 'setuptools', 'setuptools_scm']
+
+# configure ruff
+[tool.ruff]
+line-length = 120
+target-version = "py314"
+
+[tool.ruff.lint]
+select = [
+    "E", # pycodestyle
+    "F", # pyflakes
+    "I", # isort
+    "B", # bugbear
+]
+
+[tool.ruff.format]
+quote-style = "single"
+
+# configure mypy
+[tool.mypy]
+python_version = "3.14"
+strict = true
+
+[tool.setuptools]
+packages = ["python_ci_base"]
+
+# configurations for setuptools-scm. This section is required for the project to be built correctly
+[tool.setuptools_scm]
+
+[project.scripts]
+app = "python_ci_base.app:main"

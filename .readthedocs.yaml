@@ -1,0 +1,21 @@
+version: 2
+
+build:
+  os: ubuntu-24.04
+  tools:
+    python: "3"
+
+  jobs:
+    pre_build:
+      - sphinx-apidoc -o docs/source/_autogen python_ci_base
+
+sphinx:
+  configuration: docs/source/conf.py
+  fail_on_warning: true
+
+python:
+  install:
+    - method: pip
+      path: .
+      extra_requirements:
+        - docs
