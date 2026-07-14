@@ -39,12 +39,12 @@ jobs:
         run: ruff format --diff --target-version=py314
 
       - name: MyPy
-        run: mypy python_ci_base
+        run: mypy shapeddataclass
 
       - name: Run tests
         run: |
           mkdir summary
-          pytest --cov=python_ci_base --cov-report=markdown-append:summary/coverage.md --markdown-summary-file=summary/summary.md
+          pytest --cov=shapeddataclass --cov-report=markdown-append:summary/coverage.md --markdown-summary-file=summary/summary.md
           echo -e "# Summary\n" >> $GITHUB_STEP_SUMMARY
           cat summary/summary.md >> $GITHUB_STEP_SUMMARY
           echo -e "\n# Coverage\n" >> $GITHUB_STEP_SUMMARY
@@ -57,8 +57,8 @@ jobs:
 #    name: Build project for TestPyPI
 #    runs-on: ubuntu-latest
 #    env:
-#      # TODO: replace PYTHON_CI_BASE (derived from python_ci_base) with the escaped project.name from pyproject.toml (upper-case everything, replace '.', '-' with '_', see PEP 503)
-#      SETUPTOOLS_SCM_OVERRIDES_FOR_PYTHON_CI_BASE: '{local_scheme = "no-local-version-strict"}'
+#      # TODO: replace SHAPEDDATACLASS (derived from shapeddataclass) with the escaped project.name from pyproject.toml (upper-case everything, replace '.', '-' with '_', see PEP 503)
+#      SETUPTOOLS_SCM_OVERRIDES_FOR_SHAPEDDATACLASS: '{local_scheme = "no-local-version-strict"}'
 #
 #    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
 #
@@ -79,8 +79,8 @@ jobs:
 #    environment:
 #      name: testpypi
 #
-#      # TODO: change <python_ci_base> to the package name you assigned for your PyPI project
-#      url: https://test.pypi.org/p/<python_ci_base>
+#      # TODO: change <shapeddataclass> to the package name you assigned for your PyPI project
+#      url: https://test.pypi.org/p/<shapeddataclass>
 #
 #    permissions:
 #      id-token: write
@@ -121,8 +121,8 @@ jobs:
 #    environment:
 #        name: pypi
 #
-#        # TODO: change <python_ci_base> to the package name you assigned for your PyPI project
-#        url: https://pypi.org/p/<python_ci_base>
+#        # TODO: change <shapeddataclass> to the package name you assigned for your PyPI project
+#        url: https://pypi.org/p/<shapeddataclass>
 #    permissions:
 #      id-token: write
 #

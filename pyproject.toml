@@ -4,22 +4,21 @@ requires = ["setuptools", "setuptools.scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-# TODO: adjust python_ci_base. This name *must* match your package's name on PyPI and TestPyPI if you're deploying to them
-name = "python_ci_base"
+name = "shapeddataclass"
 
 # the version is automatically determined using setuptools.scm
 dynamic = ["version"]
 
 # TODO: adjust description
-description = ""
+description = "Declare dataclasses with buffers. Supports numpy and PyTorch."
 readme = "README.md"
 requires-python = ">=3.14"
 license-files = ["LICEN[CS]E"]
 # TODO: adjust keywords
 keywords = []
 
-# TODO: adjust dependencies
 dependencies = [
+    "dataclassbase"
 ]
 
 # see https://pypi.org/classifiers/
@@ -57,10 +56,10 @@ python_version = "3.14"
 strict = true
 
 [tool.setuptools]
-packages = ["python_ci_base"]
+packages = ["shapeddataclass"]
 
 # configurations for setuptools-scm. This section is required for the project to be built correctly
 [tool.setuptools_scm]
 
 [project.scripts]
-app = "python_ci_base.app:main"
+app = "shapeddataclass.app:main"

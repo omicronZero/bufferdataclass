@@ -1,4 +1,4 @@
-python_ci_base documentation
+shapeddataclass documentation
 ============================
 
 

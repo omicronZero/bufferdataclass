@@ -7,7 +7,7 @@ build:
 
   jobs:
     pre_build:
-      - sphinx-apidoc -o docs/source/_autogen python_ci_base
+      - sphinx-apidoc -o docs/source/_autogen shapeddataclass
 
 sphinx:
   configuration: docs/source/conf.py
