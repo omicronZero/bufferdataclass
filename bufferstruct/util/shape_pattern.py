@@ -70,7 +70,7 @@ class VariableAssignment(_typing.Mapping[str | ShapeVariable, int]):
 
             return value
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._dct)
 
     def __iter__(self) -> _typing.Iterator[ShapeVariable]:
@@ -102,7 +102,20 @@ class ShapeMatch:
 
         return self.variable_assignment[key]
 
-    def get[TOpt](self, key: str | ShapeVariable, default: TOpt = None) -> int | TOpt:
+    @_typing.overload
+    def get(self, key: str | ShapeVariable) -> int | None:
+        """
+        Returns the assignment made to the indicated shape variable or shape variable name or, if unassigned, the
+        indicated default value.
+
+        :param key: The shape variable or the name of a shape variable.
+        :return: The axis size assigned to the referred shape variable.
+        :raises RuntimeError: The match was not successful.
+        """
+        ...
+
+    @_typing.overload
+    def get[TOpt](self, key: str | ShapeVariable, default: TOpt) -> int | TOpt:
         """
         Returns the assignment made to the indicated shape variable or shape variable name or, if unassigned, the
         indicated default value.
@@ -110,9 +123,12 @@ class ShapeMatch:
         :param key: The shape variable or the name of a shape variable.
         :param default: The default value to return if the shape variable or shape variable name was not assigned a
             value (i.e., if it was not used in the pattern).
-        :return: The axis size assigned to the referred shape variable.
+        :return: The axis size assigned to the referred shape variable or the default value, if unassigned.
         :raises RuntimeError: The match was not successful.
         """
+        ...
+
+    def get(self, key: str | ShapeVariable, default: _typing.Any = None) -> int | _typing.Any:
         if self.variable_assignment is None:
             raise RuntimeError('The current operation was not successful.')
 
@@ -380,9 +396,10 @@ class ShapePattern:
                 var = shape_vars.get(arg)
 
                 if var is None:
-                    shape_vars[arg] = arg = ShapeVariable(arg)
-                else:
-                    arg = var
+                    var = ShapeVariable(arg)
+                    shape_vars[arg] = var
+
+                arg = var
 
             mapped.append(arg)
 
@@ -509,9 +526,6 @@ class ShapePattern:
 
         # check all positional constraints and whether the shape variable assignments match
         for i, (requirement, actual) in enumerate(zip(expected_shape, shape, strict=True)):
-            requirement: Constraint | ShapeVariable | None
-            actual: int
-
             if requirement is None:
                 continue
 

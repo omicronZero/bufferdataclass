@@ -55,29 +55,9 @@ class ReadableBuffer[T](Shaped, _typing.Protocol):
         ...
 
     @_typing.overload
-    def __getitem__(self, indices: _typing.Sequence[int], /) -> _typing.Self | T:
-        """
-        Returns a new buffer containing the indexed items.
-
-        :param indices: The indices of the items to take.
-        :return: A buffer containing the selected items.
-        """
-        ...
-
-    @_typing.overload
-    def __getitem__(self, mask: _typing.Sequence[bool], /) -> _typing.Self | T:
-        """
-        Returns a new buffer containing the items for which the indicated mask is `True`.
-
-        :param mask: The mask which is `True` for all items to pick and `False` for all other items. It must have the
-            same length as the current instance.
-        :return: A buffer containing the selected items.
-        """
-        ...
-
-    @_typing.overload
     def __getitem__(
-        self, args: tuple[_types.EllipsisType, None | int | slice | _typing.Sequence[int] | _typing.Sequence[bool], ...]
+        self,
+        args: tuple[_types.EllipsisType | None | int | slice | _typing.Sequence[int] | _typing.Sequence[bool], ...],
     ) -> _typing.Self:
         """
         Combines the different types of access operations to the buffer's axes.
@@ -95,5 +75,26 @@ class ReadableBuffer[T](Shaped, _typing.Protocol):
 
         :param args: A tuple of indexing modes.
         :return: The view or new buffer.
+        """
+        ...
+
+    @_typing.overload
+    def __getitem__(self, mask: _typing.Sequence[bool], /) -> _typing.Self | T:
+        """
+        Returns a new buffer containing the items for which the indicated mask is `True`.
+
+        :param mask: The mask which is `True` for all items to pick and `False` for all other items. It must have the
+            same length as the current instance.
+        :return: A buffer containing the selected items.
+        """
+        ...
+
+    @_typing.overload
+    def __getitem__(self, indices: _typing.Sequence[int], /) -> _typing.Self | T:
+        """
+        Returns a new buffer containing the indexed items.
+
+        :param indices: The indices of the items to take.
+        :return: A buffer containing the selected items.
         """
         ...

@@ -96,6 +96,6 @@ def normalize_index(
 
     if tail_indices is not None:
         head_indices.extend(tail_indices)
-        head_orig_axes.extend(tail_orig_axes)
+        head_orig_axes.extend(tail_orig_axes)  # type: ignore[arg-type]
 
     return NormalizeIndexResult(tuple(head_indices), tuple(head_orig_axes))
