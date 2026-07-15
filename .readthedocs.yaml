@@ -7,7 +7,7 @@ build:
 
   jobs:
     pre_build:
-      - sphinx-apidoc -o docs/source/_autogen bufferdataclass
+      - sphinx-apidoc -o docs/source/_autogen bufferstruct
 
 sphinx:
   configuration: docs/source/conf.py

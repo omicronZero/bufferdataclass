@@ -1,1 +1,1 @@
-# bufferdataclass
+# bufferstruct

@@ -4,7 +4,7 @@ requires = ["setuptools", "setuptools.scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "bufferdataclass"
+name = "bufferstruct"
 
 # the version is automatically determined using setuptools.scm
 dynamic = ["version"]
@@ -56,10 +56,10 @@ python_version = "3.14"
 strict = true
 
 [tool.setuptools]
-packages = ["bufferdataclass"]
+packages = ["bufferstruct"]
 
 # configurations for setuptools-scm. This section is required for the project to be built correctly
 [tool.setuptools_scm]
 
 [project.scripts]
-app = "bufferdataclass.app:main"
+app = "bufferstruct.app:main"

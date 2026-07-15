@@ -1,4 +1,4 @@
-bufferdataclass documentation
+bufferstruct documentation
 ============================
 
 
