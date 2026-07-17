@@ -2,100 +2,161 @@ import types as _types
 import typing as _typing
 
 
-def validate_shape(shape: tuple[int, ...], parameter_name: str | None = None) -> None:
-    """
-    Validates the indicated shape. All entries of the shape must be non-negative integers.
-
-    :param shape: The shape to check.
-    :param parameter_name: Optional. If specified, this is the parameter name the shape was supplied to.
-    """
-
-    if any(not isinstance(s, int) or s < 0 for s in shape):
-        if parameter_name is None:
-            raise ValueError('All entries of the shape must be non-negative integers.')
-        else:
-            raise ValueError(f'All entries of `{parameter_name}` must be non-negative integers.')
+@_typing.runtime_checkable
+class Named(_typing.Protocol):
+    __name__: str
 
 
-IndexDecl: _typing.TypeAlias = int | slice | _types.EllipsisType | None | _typing.Sequence[int] | _typing.Sequence[bool]
-IndicesDecl = IndexDecl | tuple[IndexDecl, ...]
-Index: _typing.TypeAlias = None | int | slice | _typing.Sequence[int] | _typing.Sequence[bool]
-Indices: _typing.TypeAlias = tuple[Index, ...]
+@_typing.runtime_checkable
+class QualNamed(_typing.Protocol):
+    __qualname__: str
 
 
-class NormalizeIndexResult(_typing.NamedTuple):
-    indices: Indices
-    original_axes: tuple[int | None, ...]
-
-    @property
-    def has_new_axes(self) -> bool:
-        return any(ax is None for ax in self.original_axes)
+@_typing.runtime_checkable
+class ModuleMember(_typing.Protocol):
+    __module__: str
+    __qualname__: str
 
 
-def normalize_index(
-    shape: tuple[int, ...], indices: IndicesDecl, fill: bool = True, parameter_name: str | None = None
-) -> NormalizeIndexResult:
-    if not isinstance(indices, _typing.Iterable):
-        indices = (indices,)
+def nameof(
+    obj: _typing.Any,
+    fallback: _typing.Callable[[_typing.Any], str] | None = None,
+    prune_modules: _typing.Container[str] = (),
+    prune_builtins: bool = True,
+    prune_main: bool = True,
+) -> str:
+    if isinstance(obj, property):
+        return nameof(obj.fget or obj.fset or obj.fdel, fallback, prune_modules, prune_builtins, prune_main)
+
+    module = None
+
+    if isinstance(obj, ModuleMember):
+        module = obj.__module__
+        name = obj.__qualname__
+    elif isinstance(obj, QualNamed):
+        name = obj.__qualname__
+    elif isinstance(obj, Named):
+        name = obj.__name__
+    elif fallback is not None:
+        return fallback(obj)
     else:
-        indices = tuple(indices)
+        raise TypeError('The indicated object could not be represented as a name.')
 
-    head_indices: list[Index] = []
-    head_orig_axes: list[int | None] = []
+    if module is not None:
+        if module in prune_modules:
+            module = None
+        elif prune_builtins and module == 'builtins':
+            module = None
+        elif prune_main and module == '__main__':
+            module = None
 
-    tail_indices: list[Index] | None = None
-    tail_orig_axes: list[int | None] | None = None
+    if module is None:
+        return name
+    else:
+        return f'{module}.{name}'
 
-    tgt_indices = head_indices
-    tgt_orig_axes = head_orig_axes
 
-    remaining_axes = len(shape)
-    last_head_orig_index = 0
+def classnameof(
+    obj: _typing.Any,
+    fallback: _typing.Callable[[_typing.Any], str] | None = None,
+    prune_modules: _typing.Container[str] = (),
+    prune_builtins: bool = True,
+    prune_main: bool = True,
+) -> str:
+    if isinstance(obj, property):
+        return classnameof(obj.fget or obj.fset or obj.fdel, fallback, prune_modules, prune_builtins, prune_main)
 
-    orig_index = 0
+    return nameof(type(obj), fallback, prune_modules, prune_builtins, prune_main)
 
-    for i, v in enumerate(indices):
-        if tail_indices is not None:
-            # we fill if we encountered a tail index
-            fill = True
 
-        if v is ...:
-            if tail_indices is not None:
-                if parameter_name is None:
-                    raise ValueError('At most one ellipsis may be specified in a multi-index.')
-                else:
-                    raise ValueError(f'At most one ellipsis may be specified in `{parameter_name}`.')
+@_typing.overload
+def bullet(
+    items: _typing.Iterable[str],
+    bullet: str = ' - ',
+    header: str | None = None,
+    skip_empty_items: bool | _typing.Literal['keep_whitespace'] = True,
+    linesep: str | _types.EllipsisType = ...,
+    target: _typing.Literal[None] = None,
+) -> str: ...
 
-            # as soon as we encounter an ellipsis, we write to the tail, not to the head
-            tgt_indices = tail_indices = []
-            tgt_orig_axes = tail_orig_axes = []
-            orig_index = len(shape) - sum(v is not None for v in indices[i + 1 :])
-        elif v is None:
-            tgt_indices.append(None)
-            tgt_orig_axes.append(None)
-        else:
-            if remaining_axes == 0:
-                if parameter_name is None:
-                    raise ValueError('Too many indices specified.')
-                else:
-                    raise ValueError(f'Too many indices specified for `{parameter_name}`.')
 
-            tgt_indices.append(v)
-            tgt_orig_axes.append(orig_index)
-            orig_index += 1
-            remaining_axes -= 1
+@_typing.overload
+def bullet(
+    items: _typing.Iterable[str],
+    bullet: str = ' - ',
+    header: str | None = None,
+    skip_empty_items: bool | _typing.Literal['keep_whitespace'] = True,
+    linesep: str | _types.EllipsisType = ...,
+    target: list[str] = ...,
+) -> None: ...
 
-            if tail_indices is None:
-                last_head_orig_index = orig_index
 
-    if fill and remaining_axes > 0:
-        fill_base_index = last_head_orig_index
+@_typing.overload
+def bullet(
+    items: _typing.Iterable[str],
+    bullet: str = ' - ',
+    header: str | None = None,
+    skip_empty_items: bool | _typing.Literal['keep_whitespace'] = True,
+    linesep: str | _types.EllipsisType = ...,
+    target: list[str] | None = None,
+) -> str | None: ...
 
-        head_indices.extend([slice(None)] * remaining_axes)
-        head_orig_axes.extend(range(fill_base_index, fill_base_index + remaining_axes))
 
-    if tail_indices is not None:
-        head_indices.extend(tail_indices)
-        head_orig_axes.extend(tail_orig_axes)  # type: ignore[arg-type]
+def bullet(
+    items: _typing.Iterable[str],
+    bullet: str = ' - ',
+    header: str | None = None,
+    skip_empty_items: bool | _typing.Literal['keep_whitespace'] = True,
+    linesep: str | _types.EllipsisType = ...,
+    target: list[str] | None = None,
+) -> str | None:
+    if linesep is ...:
+        import os
 
-    return NormalizeIndexResult(tuple(head_indices), tuple(head_orig_axes))
+        linesep = os.linesep
+
+    require_linesep = False
+
+    frags = []
+
+    if header is not None:
+        frags.append(header)
+        require_linesep = True
+
+    line_prefix = ' ' * len(bullet)
+
+    for value in items:
+        if skip_empty_items:
+            if skip_empty_items == 'keep_whitespace':
+                if len(value) == 0:
+                    continue
+            elif value.isspace():
+                continue
+
+        lines = value.splitlines()
+
+        for i, line in enumerate(lines):
+            if require_linesep:
+                frags.append(linesep)
+
+            frags.append(bullet if i == 0 else line_prefix)
+            frags.append(line)
+
+            require_linesep = True
+
+    return ''.join(frags) if target is None else None
+
+
+def attrsof(obj: _typing.Any) -> _typing.Mapping[str, _typing.Any]:
+    dct = getattr(obj, '__dict__', None)
+
+    if dct is None:
+        slots: tuple[str, ...] | None = getattr(type(obj), '__slots__', None)
+
+        if slots is not None:
+            dct = {k: getattr(obj, k) for k in slots}
+
+        if dct is None:
+            dct = {}
+
+    return dct
